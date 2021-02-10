@@ -36,28 +36,28 @@ public class RediSolarApplication extends Application<RediSolarConfiguration> {
                     final Environment environment) {
         RedisConfig redisConfig = configuration.getRedisConfig();
         JedisPool jedisPool;
-        
+
         String password = redisConfig.getPassword();
 
         if (password.length() > 0) {
-                jedisPool = new JedisPool(new JedisPoolConfig(), redisConfig.getHost(),
-                redisConfig.getPort(), 2000, redisConfig.getPassword());
+            jedisPool = new JedisPool(new JedisPoolConfig(), redisConfig.getHost(),
+                    redisConfig.getPort(), 2000, redisConfig.getPassword());
         } else {
-                jedisPool = new JedisPool(redisConfig.getHost(), redisConfig.getPort());
+            jedisPool = new JedisPool(redisConfig.getHost(), redisConfig.getPort());
         }
 
         // To use the geospatial features, replace the following lines with:
-        // SiteGeoResource siteResource =
-        //        new SiteGeoResource(new SiteGeoDaoRedisImpl(jedisPool));
-        SiteResource siteResource =
-                new SiteResource(new SiteDaoRedisImpl(jedisPool));
+        SiteGeoResource siteResource =
+                new SiteGeoResource(new SiteGeoDaoRedisImpl(jedisPool));
+        //SiteResource siteResource =
+        //        new SiteResource(new SiteDaoRedisImpl(jedisPool));
         environment.jersey().register(siteResource);
 
         // For RedisTimeSeries: replace the next lines with
         // MetricsResource metricsResource =
         //              new MetricsResource(new MetricDaoRedisTSImpl(jedisPool));
-                MetricsResource metricsResource =
-                        new MetricsResource(new MetricDaoRedisZsetImpl(jedisPool));
+        MetricsResource metricsResource =
+                new MetricsResource(new MetricDaoRedisZsetImpl(jedisPool));
         environment.jersey().register(metricsResource);
 
         CapacityResource capacityResource =
